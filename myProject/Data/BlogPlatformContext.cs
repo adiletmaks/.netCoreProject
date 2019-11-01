@@ -11,7 +11,11 @@ namespace myProject.Data
     {
         public BlogPlatformContext(DbContextOptions options) : base(options)
         {
+           
         }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<City> Cities { get; set; }
     }
 }
