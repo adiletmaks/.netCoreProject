@@ -9,8 +9,8 @@ using myProject.Data;
 namespace myProject.Migrations
 {
     [DbContext(typeof(BlogPlatformContext))]
-    [Migration("20191101193450_CreateTagsTable")]
-    partial class CreateTagsTable
+    [Migration("20191102042856_CreateAllTables")]
+    partial class CreateAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,26 @@ namespace myProject.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("myProject.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("PostId");
+
+                    b.Property<string>("Text");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("myProject.Models.Country", b =>
                 {
                     b.Property<int>("Id")
@@ -56,6 +76,41 @@ namespace myProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("myProject.Models.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<string>("Text");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("myProject.Models.PostTag", b =>
+                {
+                    b.Property<int>("PostId");
+
+                    b.Property<int>("TagId");
+
+                    b.HasKey("PostId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("PostTag");
                 });
 
             modelBuilder.Entity("myProject.Models.Role", b =>
@@ -107,6 +162,42 @@ namespace myProject.Migrations
                     b.HasOne("myProject.Models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
+                });
+
+            modelBuilder.Entity("myProject.Models.Comment", b =>
+                {
+                    b.HasOne("myProject.Models.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("myProject.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("myProject.Models.Post", b =>
+                {
+                    b.HasOne("myProject.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("myProject.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("myProject.Models.PostTag", b =>
+                {
+                    b.HasOne("myProject.Models.Post", "Post")
+                        .WithMany("PostTags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("myProject.Models.Tag", "Tag")
+                        .WithMany("PostTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("myProject.Models.User", b =>

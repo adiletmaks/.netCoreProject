@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using myProject.Data;
 using myProject.Models;
 
 namespace myProject.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CitiesController : ControllerBase
+    public class CitiesController : Controller
     {
         private readonly BlogPlatformContext _context;
 
@@ -21,81 +19,130 @@ namespace myProject.Controllers
             _context = context;
         }
 
-        // GET: api/Cities
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetCities()
+        // GET: Cities
+        public async Task<IActionResult> Index()
         {
-            return await _context.Cities.ToListAsync();
+            return View(await _context.Cities.ToListAsync());
         }
 
-        // GET: api/Cities/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetCity(int id)
+        // GET: Cities/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var city = await _context.Cities.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var city = await _context.Cities
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
 
-            return city;
+            return View(city);
         }
 
-        // PUT: api/Cities/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCity(int id, City city)
+        // GET: Cities/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Cities/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name")] City city)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(city);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(city);
+        }
+
+        // GET: Cities/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var city = await _context.Cities.FindAsync(id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+            return View(city);
+        }
+
+        // POST: Cities/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] City city)
         {
             if (id != city.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(city).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CityExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(city);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!CityExists(city.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(city);
         }
 
-        // POST: api/Cities
-        [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
+        // GET: Cities/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            _context.Cities.Add(city);
-            await _context.SaveChangesAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction("GetCity", new { id = city.Id }, city);
-        }
-
-        // DELETE: api/Cities/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<City>> DeleteCity(int id)
-        {
-            var city = await _context.Cities.FindAsync(id);
+            var city = await _context.Cities
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
 
+            return View(city);
+        }
+
+        // POST: Cities/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var city = await _context.Cities.FindAsync(id);
             _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
-
-            return city;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool CityExists(int id)
