@@ -25,6 +25,11 @@ namespace myProject.Data
         {
             modelBuilder.Entity<PostTag>()
                 .HasKey(t => new { t.PostId, t.TagId });
+
+            modelBuilder.Entity<Post>()
+               .HasMany(p => p.Comments)
+               .WithOne(c => c.Post)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
