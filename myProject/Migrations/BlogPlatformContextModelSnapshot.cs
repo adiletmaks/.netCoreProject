@@ -158,7 +158,7 @@ namespace myProject.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<uint?>("RoleId");
+                    b.Property<uint>("RoleId");
 
                     b.HasKey("Id");
 
@@ -214,7 +214,8 @@ namespace myProject.Migrations
                 {
                     b.HasOne("myProject.Models.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

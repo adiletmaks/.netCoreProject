@@ -15,6 +15,7 @@ namespace myProject.Models
         public string LastName { get; set; }
         [Column(TypeName = "varchar(100)")]
         public string Email { get; set; }
+        public uint RoleId { get; set; }
         public Role Role { get; set; }
     }
 }

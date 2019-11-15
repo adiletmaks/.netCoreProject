@@ -9,8 +9,8 @@ using myProject.Data;
 namespace myProject.Migrations
 {
     [DbContext(typeof(BlogPlatformContext))]
-    [Migration("20191115064259_createAllTables")]
-    partial class createAllTables
+    [Migration("20191115073632_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -160,7 +160,7 @@ namespace myProject.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<uint?>("RoleId");
+                    b.Property<uint>("RoleId");
 
                     b.HasKey("Id");
 
@@ -216,7 +216,8 @@ namespace myProject.Migrations
                 {
                     b.HasOne("myProject.Models.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

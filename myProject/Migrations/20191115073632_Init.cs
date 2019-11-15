@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace myProject.Migrations
 {
-    public partial class createAllTables : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -88,7 +88,7 @@ namespace myProject.Migrations
                     FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(100)", nullable: true),
                     Email = table.Column<string>(type: "varchar(100)", nullable: true),
-                    RoleId = table.Column<uint>(nullable: true)
+                    RoleId = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +98,7 @@ namespace myProject.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
