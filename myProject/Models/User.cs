@@ -1,4 +1,5 @@
-﻿using System;
+﻿using myProject.Validations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@ using System.Web;
 
 namespace myProject.Models
 {
+    [CheckPasswordStrength]
     public class User
     {
         public uint Id { get; set; }
