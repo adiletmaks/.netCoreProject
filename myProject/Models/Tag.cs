@@ -13,6 +13,7 @@ namespace myProject.Models
 
         [Column(TypeName = "varchar(100)")]
         [Required]
+        [Index(IsUnique = true)]
         public string Name { get; set; }
 
         public ICollection<PostTag> PostTags { get; } = new List<PostTag>();

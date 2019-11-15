@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +14,8 @@ namespace myProject.Models
 
         [Column(TypeName = "varchar(20)")]
         [Required]
+        [Index(IsUnique = true)]
+        [Remote("ValidateRoleSlug", "Roles", ErrorMessage = "Please enter a valid role slug.")]
         public string Slug { get; set; }
     }
 }

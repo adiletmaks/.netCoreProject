@@ -149,5 +149,21 @@ namespace myProject.Controllers
         {
             return _context.Roles.Any(e => e.Id == id);
         }
+
+        public IActionResult ValidateRoleSlug(string slug)
+        {
+            bool result;
+
+            if (slug == "admin" || slug == "user")
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+
+            return Json(result);
+        }
     }
 }
