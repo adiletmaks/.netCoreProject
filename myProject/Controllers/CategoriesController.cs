@@ -26,7 +26,7 @@ namespace myProject.Controllers
         }
 
         // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
             {
@@ -66,7 +66,7 @@ namespace myProject.Controllers
         }
 
         // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name")] Category category)
         {
             if (id != category.Id)
             {
@@ -117,7 +117,7 @@ namespace myProject.Controllers
         }
 
         // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
             {
@@ -137,7 +137,7 @@ namespace myProject.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(uint id)
         {
             var category = await _context.Categories.FindAsync(id);
             _context.Categories.Remove(category);
@@ -145,7 +145,7 @@ namespace myProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool CategoryExists(uint id)
         {
             return _context.Categories.Any(e => e.Id == id);
         }

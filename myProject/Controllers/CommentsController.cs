@@ -10,22 +10,22 @@ using myProject.Models;
 
 namespace myProject.Controllers
 {
-    public class CountriesController : Controller
+    public class CommentsController : Controller
     {
         private readonly BlogPlatformContext _context;
 
-        public CountriesController(BlogPlatformContext context)
+        public CommentsController(BlogPlatformContext context)
         {
             _context = context;
         }
 
-        // GET: Countries
+        // GET: Comments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Countries.ToListAsync());
+            return View(await _context.Comments.ToListAsync());
         }
 
-        // GET: Countries/Details/5
+        // GET: Comments/Details/5
         public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries
+            var comment = await _context.Comments
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(comment);
         }
 
-        // GET: Countries/Create
+        // GET: Comments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Countries/Create
+        // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Create([Bind("Id,Text")] Comment comment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
+                _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(comment);
         }
 
-        // GET: Countries/Edit/5
+        // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries.FindAsync(id);
-            if (country == null)
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
-            return View(country);
+            return View(comment);
         }
 
-        // POST: Countries/Edit/5
+        // POST: Comments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name")] Country country)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Text")] Comment comment)
         {
-            if (id != country.Id)
+            if (id != comment.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace myProject.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CountryExists(country.Id))
+                    if (!CommentExists(comment.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace myProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(country);
+            return View(comment);
         }
 
-        // GET: Countries/Delete/5
+        // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries
+            var comment = await _context.Comments
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (country == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(country);
+            return View(comment);
         }
 
-        // POST: Countries/Delete/5
+        // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(uint id)
         {
-            var country = await _context.Countries.FindAsync(id);
-            _context.Countries.Remove(country);
+            var comment = await _context.Comments.FindAsync(id);
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CountryExists(uint id)
+        private bool CommentExists(uint id)
         {
-            return _context.Countries.Any(e => e.Id == id);
+            return _context.Comments.Any(e => e.Id == id);
         }
     }
 }

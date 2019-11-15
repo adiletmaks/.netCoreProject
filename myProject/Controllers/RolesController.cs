@@ -26,7 +26,7 @@ namespace myProject.Controllers
         }
 
         // GET: Roles/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
             {
@@ -66,7 +66,7 @@ namespace myProject.Controllers
         }
 
         // GET: Roles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Slug")] Role role)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Slug")] Role role)
         {
             if (id != role.Id)
             {
@@ -117,7 +117,7 @@ namespace myProject.Controllers
         }
 
         // GET: Roles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
             {
@@ -137,7 +137,7 @@ namespace myProject.Controllers
         // POST: Roles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(uint id)
         {
             var role = await _context.Roles.FindAsync(id);
             _context.Roles.Remove(role);
@@ -145,7 +145,7 @@ namespace myProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RoleExists(int id)
+        private bool RoleExists(uint id)
         {
             return _context.Roles.Any(e => e.Id == id);
         }

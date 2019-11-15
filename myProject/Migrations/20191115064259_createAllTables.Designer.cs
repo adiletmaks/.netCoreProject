@@ -9,21 +9,23 @@ using myProject.Data;
 namespace myProject.Migrations
 {
     [DbContext(typeof(BlogPlatformContext))]
-    [Migration("20191102042856_CreateAllTables")]
-    partial class CreateAllTables
+    [Migration("20191115064259_createAllTables")]
+    partial class createAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("myProject.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -32,12 +34,13 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.City", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CountryId");
+                    b.Property<uint?>("CountryId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -48,14 +51,15 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("PostId");
+                    b.Property<uint?>("PostId");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("UserId");
+                    b.Property<uint?>("UserId");
 
                     b.HasKey("Id");
 
@@ -63,15 +67,16 @@ namespace myProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("myProject.Models.Country", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -80,16 +85,18 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.Post", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CategoryId");
+                    b.Property<uint?>("CategoryId");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<int?>("UserId");
+                    b.Property<uint?>("UserId");
 
                     b.HasKey("Id");
 
@@ -102,9 +109,9 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.PostTag", b =>
                 {
-                    b.Property<int>("PostId");
+                    b.Property<uint>("PostId");
 
-                    b.Property<int>("TagId");
+                    b.Property<uint>("TagId");
 
                     b.HasKey("PostId", "TagId");
 
@@ -115,10 +122,11 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Slug");
+                    b.Property<string>("Slug")
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
@@ -127,10 +135,11 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.Tag", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -139,16 +148,19 @@ namespace myProject.Migrations
 
             modelBuilder.Entity("myProject.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<uint>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<int?>("RoleId");
+                    b.Property<uint?>("RoleId");
 
                     b.HasKey("Id");
 

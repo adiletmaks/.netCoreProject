@@ -26,7 +26,7 @@ namespace myProject.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
             {
@@ -66,7 +66,7 @@ namespace myProject.Controllers
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email")] User user)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,FirstName,LastName,Email")] User user)
         {
             if (id != user.Id)
             {
@@ -117,7 +117,7 @@ namespace myProject.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
             {
@@ -137,7 +137,7 @@ namespace myProject.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(uint id)
         {
             var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
@@ -145,7 +145,7 @@ namespace myProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool UserExists(uint id)
         {
             return _context.Users.Any(e => e.Id == id);
         }

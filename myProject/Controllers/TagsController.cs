@@ -26,7 +26,7 @@ namespace myProject.Controllers
         }
 
         // GET: Tags/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(uint? id)
         {
             if (id == null)
             {
@@ -66,7 +66,7 @@ namespace myProject.Controllers
         }
 
         // GET: Tags/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(uint? id)
         {
             if (id == null)
             {
@@ -86,7 +86,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Tag tag)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name")] Tag tag)
         {
             if (id != tag.Id)
             {
@@ -117,7 +117,7 @@ namespace myProject.Controllers
         }
 
         // GET: Tags/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(uint? id)
         {
             if (id == null)
             {
@@ -137,7 +137,7 @@ namespace myProject.Controllers
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(uint id)
         {
             var tag = await _context.Tags.FindAsync(id);
             _context.Tags.Remove(tag);
@@ -145,7 +145,7 @@ namespace myProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TagExists(int id)
+        private bool TagExists(uint id)
         {
             return _context.Tags.Any(e => e.Id == id);
         }

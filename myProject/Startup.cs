@@ -35,7 +35,7 @@ namespace myProject
 
             services.AddDbContext<BlogPlatformContext>(options =>
             {
-                options.UseSqlite("Filename=blogPlatformDb.db");
+                options.UseMySql("server=localhost;UserId=root;Password=;database=blogPlatform;");
             });
 
 
