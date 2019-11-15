@@ -22,7 +22,8 @@ namespace myProject.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cities.ToListAsync());
+            var blogPlatformContext = _context.Cities.Include(c => c.Country);
+            return View(await blogPlatformContext.ToListAsync());
         }
 
         // GET: Cities/Details/5
@@ -34,6 +35,7 @@ namespace myProject.Controllers
             }
 
             var city = await _context.Cities
+                .Include(c => c.Country)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {
@@ -46,6 +48,7 @@ namespace myProject.Controllers
         // GET: Cities/Create
         public IActionResult Create()
         {
+            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] City city)
+        public async Task<IActionResult> Create([Bind("Id,Name,CountryId")] City city)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace myProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
             return View(city);
         }
 
@@ -78,6 +82,7 @@ namespace myProject.Controllers
             {
                 return NotFound();
             }
+            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
             return View(city);
         }
 
@@ -86,7 +91,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name")] City city)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name,CountryId")] City city)
         {
             if (id != city.Id)
             {
@@ -113,6 +118,7 @@ namespace myProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
             return View(city);
         }
 
@@ -125,6 +131,7 @@ namespace myProject.Controllers
             }
 
             var city = await _context.Cities
+                .Include(c => c.Country)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (city == null)
             {

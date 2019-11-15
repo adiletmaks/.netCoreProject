@@ -31,6 +31,15 @@ namespace myProject.Data
                .HasMany(p => p.Comments)
                .WithOne(c => c.Post)
                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+               .HasIndex(b => b.Email)
+               .IsUnique();
+
+            modelBuilder.Entity<Role>().HasData(
+                new { Id = (uint) 1, Slug = "user" },
+                new { Id = (uint) 2, Slug = "admin" }
+             );
         }
     }
 }

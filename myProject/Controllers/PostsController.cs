@@ -22,7 +22,8 @@ namespace myProject.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Posts.ToListAsync());
+            var blogPlatformContext = _context.Posts.Include(p => p.Category).Include(p => p.User);
+            return View(await blogPlatformContext.ToListAsync());
         }
 
         // GET: Posts/Details/5
@@ -34,6 +35,8 @@ namespace myProject.Controllers
             }
 
             var post = await _context.Posts
+                .Include(p => p.Category)
+                .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {
@@ -46,6 +49,8 @@ namespace myProject.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -54,7 +59,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Text")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,Text,UserId,CategoryId")] Post post)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +67,8 @@ namespace myProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
             return View(post);
         }
 
@@ -78,6 +85,8 @@ namespace myProject.Controllers
             {
                 return NotFound();
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
             return View(post);
         }
 
@@ -86,7 +95,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Title,Text")] Post post)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Title,Text,UserId,CategoryId")] Post post)
         {
             if (id != post.Id)
             {
@@ -113,6 +122,8 @@ namespace myProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
             return View(post);
         }
 
@@ -125,6 +136,8 @@ namespace myProject.Controllers
             }
 
             var post = await _context.Posts
+                .Include(p => p.Category)
+                .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {

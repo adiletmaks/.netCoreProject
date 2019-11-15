@@ -13,7 +13,7 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", nullable: true)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,7 +26,7 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", nullable: true)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +39,7 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Slug = table.Column<string>(type: "varchar(20)", nullable: true)
+                    Slug = table.Column<string>(type: "varchar(20)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +52,7 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", nullable: true)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,8 +65,8 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    CountryId = table.Column<uint>(nullable: true)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: false),
+                    CountryId = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +76,7 @@ namespace myProject.Migrations
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,9 +85,10 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
-                    LastName = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Email = table.Column<string>(type: "varchar(100)", nullable: true),
+                    FirstName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    LastName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Password = table.Column<string>(type: "varchar(255)", nullable: false),
                     RoleId = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
@@ -107,10 +108,10 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Text = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<uint>(nullable: true),
-                    CategoryId = table.Column<uint>(nullable: true)
+                    Title = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<uint>(nullable: false),
+                    CategoryId = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,13 +121,13 @@ namespace myProject.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Posts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,9 +136,9 @@ namespace myProject.Migrations
                 {
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Text = table.Column<string>(type: "text", nullable: true),
-                    PostId = table.Column<uint>(nullable: true),
-                    UserId = table.Column<uint>(nullable: true)
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    PostId = table.Column<uint>(nullable: false),
+                    UserId = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,7 +154,7 @@ namespace myProject.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,6 +180,16 @@ namespace myProject.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Slug" },
+                values: new object[] { 1u, "user" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Slug" },
+                values: new object[] { 2u, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_CountryId",
@@ -209,6 +220,12 @@ namespace myProject.Migrations
                 name: "IX_PostTag_TagId",
                 table: "PostTag",
                 column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",

@@ -22,7 +22,8 @@ namespace myProject.Controllers
         // GET: Comments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Comments.ToListAsync());
+            var blogPlatformContext = _context.Comments.Include(c => c.Post).Include(c => c.User);
+            return View(await blogPlatformContext.ToListAsync());
         }
 
         // GET: Comments/Details/5
@@ -34,6 +35,8 @@ namespace myProject.Controllers
             }
 
             var comment = await _context.Comments
+                .Include(c => c.Post)
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (comment == null)
             {
@@ -46,6 +49,8 @@ namespace myProject.Controllers
         // GET: Comments/Create
         public IActionResult Create()
         {
+            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Text");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -54,7 +59,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Text")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Text,PostId,UserId")] Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +67,8 @@ namespace myProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Text", comment.PostId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", comment.UserId);
             return View(comment);
         }
 
@@ -78,6 +85,8 @@ namespace myProject.Controllers
             {
                 return NotFound();
             }
+            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Text", comment.PostId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", comment.UserId);
             return View(comment);
         }
 
@@ -86,7 +95,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Text")] Comment comment)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Text,PostId,UserId")] Comment comment)
         {
             if (id != comment.Id)
             {
@@ -113,6 +122,8 @@ namespace myProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Text", comment.PostId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", comment.UserId);
             return View(comment);
         }
 
@@ -125,6 +136,8 @@ namespace myProject.Controllers
             }
 
             var comment = await _context.Comments
+                .Include(c => c.Post)
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (comment == null)
             {

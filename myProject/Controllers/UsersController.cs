@@ -22,7 +22,8 @@ namespace myProject.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            var blogPlatformContext = _context.Users.Include(u => u.Role);
+            return View(await blogPlatformContext.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -34,6 +35,7 @@ namespace myProject.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
@@ -46,7 +48,7 @@ namespace myProject.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewBag.Roles = _context.Roles.ToList();
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Slug");
             return View();
         }
 
@@ -55,7 +57,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,RoleId")] User user)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Password,RoleId")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -63,6 +65,7 @@ namespace myProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Slug", user.RoleId);
             return View(user);
         }
 
@@ -79,6 +82,7 @@ namespace myProject.Controllers
             {
                 return NotFound();
             }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Slug", user.RoleId);
             return View(user);
         }
 
@@ -87,7 +91,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,FirstName,LastName,Email")] User user)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,FirstName,LastName,Email,Password,RoleId")] User user)
         {
             if (id != user.Id)
             {
@@ -114,6 +118,7 @@ namespace myProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Slug", user.RoleId);
             return View(user);
         }
 
@@ -126,6 +131,7 @@ namespace myProject.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
