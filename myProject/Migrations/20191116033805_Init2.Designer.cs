@@ -8,8 +8,8 @@ using myProject.Data;
 namespace myProject.Migrations
 {
     [DbContext(typeof(BlogPlatformContext))]
-    [Migration("20191115202327_Init")]
-    partial class Init
+    [Migration("20191116033805_Init2")]
+    partial class Init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

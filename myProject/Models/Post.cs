@@ -29,7 +29,7 @@ namespace myProject.Models
 
         public Category Category { get; set; }
 
-        public ICollection<PostTag> PostTags { get; } = new List<PostTag>();
+        public List<PostTag> PostTags { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
     }

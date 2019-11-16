@@ -16,6 +16,6 @@ namespace myProject.Models
         [Index(IsUnique = true)]
         public string Name { get; set; }
 
-        public ICollection<PostTag> PostTags { get; } = new List<PostTag>();
+        public List<PostTag> PostTags { get; set; }
     }
 }

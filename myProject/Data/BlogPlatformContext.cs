@@ -24,13 +24,22 @@ namespace myProject.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PostTag>()
-                .HasKey(t => new { t.PostId, t.TagId });
 
             modelBuilder.Entity<Post>()
                .HasMany(p => p.Comments)
                .WithOne(c => c.Post)
                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostTag>()
+                .HasKey(pt => new { pt.PostId, pt.TagId });
+            modelBuilder.Entity<PostTag>()
+                .HasOne(pt => pt.Post)
+                .WithMany(p => p.PostTags)
+                .HasForeignKey(pt => pt.PostId);
+            modelBuilder.Entity<PostTag>()
+                .HasOne(pt => pt.Tag)
+                .WithMany(t => t.PostTags)
+                .HasForeignKey(pt => pt.TagId);
 
             modelBuilder.Entity<User>()
                .HasIndex(b => b.Email)
@@ -41,5 +50,7 @@ namespace myProject.Data
                 new { Id = (uint) 2, Slug = "admin" }
              );
         }
+
+        public DbSet<myProject.Models.PostTag> PostTag { get; set; }
     }
 }
