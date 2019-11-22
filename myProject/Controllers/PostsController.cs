@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using myProject.Data;
 using myProject.Models;
 
@@ -14,14 +15,19 @@ namespace myProject.Controllers
     {
         private readonly BlogPlatformContext _context;
 
-        public PostsController(BlogPlatformContext context)
+        private readonly ILogger _logger;
+
+        public PostsController(BlogPlatformContext context, ILogger<PostsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
+            _logger.LogWarning("Index method...");
+            _logger.LogInformation("Index method INFO...");
             var blogPlatformContext = _context.Posts.Include(p => p.Category).Include(p => p.User);
             return View(await blogPlatformContext.ToListAsync());
         }
@@ -51,6 +57,12 @@ namespace myProject.Controllers
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
+            ViewData["TagsList"] = new MultiSelectList(
+                _context.Tags,
+                "Id",
+                "Name"
+            );
+
             return View();
         }
 
@@ -59,17 +71,28 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Text,UserId,CategoryId")] Post post)
+        public async Task<IActionResult> Create(PostVM viewmodel)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
-            return View(post);
+            if (viewmodel.Post == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            Post post = viewmodel.Post;
+            var postTags = viewmodel.TagsList
+                             .Where(i => i.Selected)
+                             .Select(t => new PostTag
+                             {
+                                 PostId = post.Id,
+                                 TagId = Convert.ToUInt32(t.Value)
+                             });
+
+            post.PostTags.AddRange(postTags);
+            _context.Add(post);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Posts/Edit/5

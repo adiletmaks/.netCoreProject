@@ -16,6 +16,10 @@ namespace myProject.Validations
         public override bool IsValid(object value)
         {
             User u = value as User;
+            if(u is null)
+            {
+                return true;
+            }
             if (u.Password.Contains(u.FirstName) || u.Password.Contains(u.LastName))
             {
                 return false;
