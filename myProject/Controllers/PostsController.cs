@@ -57,11 +57,7 @@ namespace myProject.Controllers
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
-            ViewData["TagsList"] = new MultiSelectList(
-                _context.Tags,
-                "Id",
-                "Name"
-            );
+            ViewData["TagsList"] = new SelectList(_context.Tags, "Id", "Name");
 
             return View();
         }
@@ -80,16 +76,19 @@ namespace myProject.Controllers
                 return BadRequest();
 
             Post post = viewmodel.Post;
-            var postTags = viewmodel.TagsList
-                             .Where(i => i.Selected)
-                             .Select(t => new PostTag
-                             {
-                                 PostId = post.Id,
-                                 TagId = Convert.ToUInt32(t.Value)
-                             });
+            _logger.LogInformation("viewmodel.SelectedTags {0}", viewmodel.SelectedTags);
 
-            post.PostTags.AddRange(postTags);
             _context.Add(post);
+            await _context.SaveChangesAsync();
+
+            List<PostTag> postTags = new List<PostTag>();
+            foreach (var postTagId in viewmodel.SelectedTags)
+            {
+                postTags.Add(new PostTag { TagId = postTagId, PostId = post.Id});
+            }
+
+            _logger.LogInformation($"postTags {postTags}");
+            post.PostTags = postTags;
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -103,14 +102,24 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.Include(p => p.PostTags).Where(p => p.Id == id).FirstOrDefaultAsync();
             if (post == null)
             {
                 return NotFound();
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
-            return View(post);
+
+            _logger.LogInformation("test post {0} {1}", post.PostTags, post.Title);
+
+            var viewModel = new PostVM
+            {
+                Post = post,
+                TagsList = new SelectList(_context.Tags, "Id", "Name"),
+                SelectedTags = post.PostTags.Select(pt => pt.TagId)
+            };
+
+            return View(viewModel);
         }
 
         // POST: Posts/Edit/5
@@ -118,36 +127,46 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Title,Text,UserId,CategoryId")] Post post)
+        public async Task<IActionResult> Edit(uint id, PostVM viewModel)
         {
-            if (id != post.Id)
+            if (id != viewModel.Post.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (! ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PostExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return BadRequest();      
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", post.UserId);
-            return View(post);
+
+            try
+            {
+                Post post = viewModel.Post;
+                _context.PostTag.RemoveRange(_context.PostTag.Where(pt => pt.PostId == id));
+                await _context.SaveChangesAsync();
+
+                //List<PostTag> postTags = new List<PostTag>();
+                foreach (var postTagId in viewModel.SelectedTags)
+                {
+                    _context.PostTag.Add(new PostTag { TagId = postTagId, PostId = post.Id });
+                }
+                //post.PostTags = postTags;
+                _context.Update(post);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PostExists(viewModel.Post.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Posts/Delete/5

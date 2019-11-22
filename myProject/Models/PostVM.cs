@@ -12,5 +12,6 @@ namespace myProject.Models
     {
         public Post Post { get; set; }
         public IEnumerable<SelectListItem> TagsList { set; get; }
+        public IEnumerable<uint> SelectedTags { get; set; }
     }
 }
