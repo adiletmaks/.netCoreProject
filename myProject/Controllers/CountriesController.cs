@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using myProject.Data;
 using myProject.Models;
+using myProject.Services;
 
 namespace myProject.Controllers
 {
     public class CountriesController : Controller
     {
         private readonly BlogPlatformContext _context;
+        private readonly CountriesService _service;
 
-        public CountriesController(BlogPlatformContext context)
+        public CountriesController(BlogPlatformContext context, CountriesService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: Countries
@@ -58,8 +61,7 @@ namespace myProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(country);
-                await _context.SaveChangesAsync();
+                _service.Store(country);
                 return RedirectToAction(nameof(Index));
             }
             return View(country);
@@ -97,8 +99,7 @@ namespace myProject.Controllers
             {
                 try
                 {
-                    _context.Update(country);
-                    await _context.SaveChangesAsync();
+                    _service.Update(country);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,9 +140,7 @@ namespace myProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(uint id)
         {
-            var country = await _context.Countries.FindAsync(id);
-            _context.Countries.Remove(country);
-            await _context.SaveChangesAsync();
+            _service.Destroy(id);
             return RedirectToAction(nameof(Index));
         }
 
