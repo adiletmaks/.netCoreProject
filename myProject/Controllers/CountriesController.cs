@@ -13,19 +13,17 @@ namespace myProject.Controllers
 {
     public class CountriesController : Controller
     {
-        private readonly BlogPlatformContext _context;
         private readonly CountriesService _service;
 
-        public CountriesController(BlogPlatformContext context, CountriesService service)
+        public CountriesController(CountriesService service)
         {
-            _context = context;
             _service = service;
         }
 
         // GET: Countries
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Countries.ToListAsync());
+            return View(await _service.GetAll());
         }
 
         // GET: Countries/Details/5
@@ -35,9 +33,7 @@ namespace myProject.Controllers
             {
                 return NotFound();
             }
-
-            var country = await _context.Countries
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var country = await _service.GetById(id);
             if (country == null)
             {
                 return NotFound();
@@ -61,7 +57,7 @@ namespace myProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _service.Store(country);
+                await _service.Store(country);
                 return RedirectToAction(nameof(Index));
             }
             return View(country);
@@ -75,7 +71,7 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries.FindAsync(id);
+            var country = await _service.GetById(id);
             if (country == null)
             {
                 return NotFound();
@@ -99,7 +95,7 @@ namespace myProject.Controllers
             {
                 try
                 {
-                    _service.Update(country);
+                    await _service.Update(country);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +121,7 @@ namespace myProject.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var country = await _service.GetById(id);
             if (country == null)
             {
                 return NotFound();
@@ -140,13 +135,13 @@ namespace myProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(uint id)
         {
-            _service.Destroy(id);
+            await _service.Destroy(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool CountryExists(uint id)
         {
-            return _context.Countries.Any(e => e.Id == id);
+            return _service.Exists(id);
         }
     }
 }

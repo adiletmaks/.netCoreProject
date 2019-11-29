@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using myProject.Data;
+using myProject.Services;
 
 namespace myProject
 {
@@ -41,6 +42,9 @@ namespace myProject
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddScoped<CountriesService>();
+            services.AddScoped<ICountriesRepository, CountriesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
