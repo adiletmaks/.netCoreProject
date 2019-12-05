@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using myProject.Data;
+using myProject.Models;
 using myProject.Services;
 
 namespace myProject
@@ -37,8 +39,14 @@ namespace myProject
 
             services.AddDbContext<BlogPlatformContext>(options =>
             {
-                options.UseMySql("server=localhost;UserId=root;Password=;database=blogPlatform;");
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddDefaultIdentity<User>()
+                 .AddEntityFrameworkStores<BlogPlatformContext>();
+
+            /*            services.AddDefaultIdentity<IdentityUser>()
+                            .AddEntityFrameworkStores<BlogPlatformContext>();*/
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -48,6 +56,7 @@ namespace myProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
@@ -64,6 +73,7 @@ namespace myProject
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

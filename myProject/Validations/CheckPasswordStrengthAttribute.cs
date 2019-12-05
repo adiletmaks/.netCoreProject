@@ -20,10 +20,10 @@ namespace myProject.Validations
             {
                 return true;
             }
-            if (u.Password.Contains(u.FirstName) || u.Password.Contains(u.LastName))
+            /*if (u.Password.Contains(u.FirstName) || u.Password.Contains(u.LastName))
             {
                 return false;
-            }
+            }*/
 
             return true;
         }
