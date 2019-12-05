@@ -43,10 +43,8 @@ namespace myProject
             });
 
             services.AddDefaultIdentity<User>()
+                 .AddRoles<IdentityRole>()
                  .AddEntityFrameworkStores<BlogPlatformContext>();
-
-            /*            services.AddDefaultIdentity<IdentityUser>()
-                            .AddEntityFrameworkStores<BlogPlatformContext>();*/
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
