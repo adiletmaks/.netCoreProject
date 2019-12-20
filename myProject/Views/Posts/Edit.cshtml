@@ -20,8 +20,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Post.Text" class="control-label"></label>
-                <input asp-for="Post.Text" class="form-control" />
+                <textarea asp-for="Post.Text" class="form-control"></textarea>
                 <span asp-validation-for="Post.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.Image" class="control-label"></label>
+                <input asp-for="Post.Image" class="form-control" />
+                <span asp-validation-for="Post.Image" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Post.UserId" class="control-label"></label>

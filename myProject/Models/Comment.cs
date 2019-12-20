@@ -21,7 +21,7 @@ namespace myProject.Models
         public Post Post { get; set; }
 
         [Required]
-        public uint UserId { get; set; }
+        public string UserId { get; set; }
 
         public User User { get; set; }
     }
