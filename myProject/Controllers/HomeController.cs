@@ -63,15 +63,15 @@ namespace myProject.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetPostsByCategory(string categorySlug = "")
+        public async Task<IActionResult> GetPostsByCategory(string slug = "")
         {
-            _logger.LogWarning("GetPostsByCategoryMethod {0}", categorySlug);
-            if (categorySlug == null || categorySlug == "")
+            _logger.LogWarning("GetPostsByCategoryMethod {0}", slug);
+            if (slug == null || slug == "")
             {
                 return NotFound();
             }
 
-            var category = _context.Categories.Where(c => c.Slug == categorySlug).First();
+            var category = _context.Categories.Where(c => c.Slug == slug).First();
             if(category == null)
             {
                 return NotFound();
