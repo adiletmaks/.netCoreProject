@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using myProject.Data;
+using myProject.Filters;
 using myProject.Models;
 using myProject.Services;
 
@@ -20,6 +21,7 @@ namespace myProject
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -48,6 +50,12 @@ namespace myProject
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddMvc()
+                .AddMvcOptions(options =>
+                {
+                    options.Filters.Add(typeof(ShareCategoriesFilter));
+                });
 
             services.AddScoped<CountriesService>();
             services.AddScoped<ICountriesRepository, CountriesRepository>();
@@ -78,6 +86,12 @@ namespace myProject
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute("post", "post/{id}",
+                    defaults: new { controller = "Home", action = "GetPostById" });
+
+                routes.MapRoute("category", "category/{slug?}",
+                    defaults: new { controller = "Home", action = "GetPostsByCategory" });
             });
         }
     }

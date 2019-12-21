@@ -15,7 +15,8 @@
             </div>
 
             <!-- post -->
-            @foreach (Post post in ViewBag.posts) {
+            @foreach (Post post in ViewBag.posts)
+            {
                 <div class="col-md-4">
                     <div class="post">
                         <a class="post-img" href="/post/@post.Id"><img src="@post.Image" alt=""></a>

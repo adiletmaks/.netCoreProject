@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ using myProject.Models;
 
 namespace myProject.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class CategoriesController : Controller
     {
         private readonly BlogPlatformContext _context;
@@ -56,7 +54,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Slug")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +86,7 @@ namespace myProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name,Slug")] Category category)
         {
             if (id != category.Id)
             {

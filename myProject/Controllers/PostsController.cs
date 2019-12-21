@@ -78,20 +78,23 @@ namespace myProject.Controllers
                 return BadRequest();
 
             Post post = viewmodel.Post;
-            _logger.LogInformation("viewmodel.SelectedTags {0}", viewmodel.SelectedTags);
+            post.CreatedAt = DateTime.Now;
 
             _context.Add(post);
             await _context.SaveChangesAsync();
 
-            List<PostTag> postTags = new List<PostTag>();
-            foreach (var postTagId in viewmodel.SelectedTags)
+            // _logger.LogInformation("viewmodel.SelectedTags {0}", viewmodel.SelectedTags);
+            if (! (viewmodel.SelectedTags is null))
             {
-                postTags.Add(new PostTag { TagId = postTagId, PostId = post.Id});
+                List<PostTag> postTags = new List<PostTag>();
+                foreach (var postTagId in viewmodel.SelectedTags)
+                {
+                    postTags.Add(new PostTag { TagId = postTagId, PostId = post.Id });
+                }
+                _logger.LogInformation($"postTags {postTags}");
+                post.PostTags = postTags;
+                await _context.SaveChangesAsync();
             }
-
-            _logger.LogInformation($"postTags {postTags}");
-            post.PostTags = postTags;
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -144,15 +147,16 @@ namespace myProject.Controllers
             try
             {
                 Post post = viewModel.Post;
+                post.CreatedAt = DateTime.Now;
                 _context.PostTag.RemoveRange(_context.PostTag.Where(pt => pt.PostId == id));
                 await _context.SaveChangesAsync();
-
-                //List<PostTag> postTags = new List<PostTag>();
-                foreach (var postTagId in viewModel.SelectedTags)
+                if (!(viewModel.SelectedTags is null))
                 {
-                    _context.PostTag.Add(new PostTag { TagId = postTagId, PostId = post.Id });
+                    foreach (var postTagId in viewModel.SelectedTags)
+                    {
+                        _context.PostTag.Add(new PostTag { TagId = postTagId, PostId = post.Id });
+                    }
                 }
-                //post.PostTags = postTags;
                 _context.Update(post);
                 await _context.SaveChangesAsync();
             }

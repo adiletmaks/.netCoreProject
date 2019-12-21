@@ -14,5 +14,9 @@ namespace myProject.Models
         [Column(TypeName = "varchar(100)")]
         [Required]
         public string Name { get; set; }
+
+        [Column(TypeName = "varchar(30)")]
+        [Required]
+        public string Slug { get; set; }
     }
 }
